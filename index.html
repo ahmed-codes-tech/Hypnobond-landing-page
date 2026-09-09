@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HypnoBond Private</title>
+<meta name="description" content="A private, guided moment from HypnoBond.">
+<meta name="theme-color" content="#2E1638">
+<link rel="icon" href="Assets/hypnobond-logo.jpg">
+<link rel="apple-touch-icon" href="Assets/hypnobond-logo.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body data-state="arrival">
+
+  <!-- Persistent atmosphere: photography + gradient + organic shapes. Stays mounted across every state; only its treatment (crop / blur / opacity) changes. -->
+  <div class="atmosphere" aria-hidden="true">
+    <div class="atmosphere__photo atmosphere__photo--arrival"></div>
+    <div class="atmosphere__photo atmosphere__photo--quiet"></div>
+    <div class="atmosphere__wash"></div>
+
+    <svg class="atmosphere__blob atmosphere__blob--one" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="blobGradientOne" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4A5FD1"/>
+          <stop offset="100%" stop-color="#C81E6B"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#blobGradientOne)" d="M431,308Q414,416,306,436Q198,456,131,368Q64,280,124,181Q184,82,296,101Q408,120,433,214Q458,308,431,308Z"/>
+    </svg>
+
+    <svg class="atmosphere__blob atmosphere__blob--two" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="blobGradientTwo" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#C81E6B"/>
+          <stop offset="100%" stop-color="#4A5FD1"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#blobGradientTwo)" d="M441,296Q432,392,338,422Q244,452,166,392Q88,332,101,232Q114,132,214,111Q314,90,388,157Q462,224,441,296Z"/>
+    </svg>
+  </div>
+
+  <!-- Persistent brand mark. Not a navigation bar: a single fixed mark, present in every state. -->
+  <header class="brand-mark">
+    <span class="brand-mark__icon">
+      <img src="Assets/hypnobond-logo.jpg" alt="" width="150" height="150">
+    </span>
+    <span class="brand-mark__word">HypnoBond</span>
+  </header>
+
+  <main class="experience">
+
+    <!-- ARRIVAL -->
+    <section class="view view--arrival" data-view="arrival" aria-hidden="false">
+      <p class="badge">3:30 &middot; Private Session</p>
+      <h1 class="headline">A quiet moment.<br>Just for you.</h1>
+      <p class="supporting">Take a moment to pause. This takes 3:30.</p>
+
+      <button class="cta" id="playButton" type="button">
+        <span class="cta__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M7 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7l-10.4-6.5A1 1 0 0 0 7 5.5Z"/></svg>
+        </span>
+        <span class="cta__label">Play</span>
+      </button>
+    </section>
+
+    <!-- AUDIO -->
+    <section class="view view--audio" data-view="audio" aria-hidden="true">
+      <p class="badge badge--quiet">3:30 &middot; Private Session</p>
+
+      <div class="player">
+        <svg class="player__ring" viewBox="0 0 140 140" aria-hidden="true">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4A5FD1"/>
+              <stop offset="100%" stop-color="#C81E6B"/>
+            </linearGradient>
+          </defs>
+          <circle class="player__ring-track" cx="70" cy="70" r="60"/>
+          <circle class="player__ring-progress" id="ringProgress" cx="70" cy="70" r="60"/>
+        </svg>
+
+        <button class="player__control" id="playPauseButton" type="button" aria-label="Play">
+          <svg class="icon icon--play" viewBox="0 0 24 24" width="26" height="26">
+            <path fill="currentColor" d="M7 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7l-10.4-6.5A1 1 0 0 0 7 5.5Z"/>
+          </svg>
+          <svg class="icon icon--pause is-hidden" viewBox="0 0 24 24" width="26" height="26">
+            <path fill="currentColor" d="M7 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5Zm7 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V5Z"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="time" id="timeLabel" aria-live="off">0:00 / 3:30</p>
+
+      <!-- Revealed only while paused (never during playback or autoplay). -->
+      <button class="corner-action corner-action--left" id="backButton" type="button">Back</button>
+      <button class="corner-action corner-action--right" id="reflectionCtaButton" type="button">Want us to send a reflection later?</button>
+    </section>
+
+    <!-- COMPLETION -->
+    <section class="view view--completion" data-view="completion" aria-hidden="true">
+      <h2 class="headline headline--completion">That&rsquo;s it.</h2>
+      <p class="supporting supporting--completion">Continue with your day.</p>
+
+      <!-- Revealed a few seconds after Completion settles, not simultaneously. -->
+      <div class="reflect-invite" id="reflectInvite">
+        <p class="reflect-invite__question">Would you like the option to reflect later?</p>
+        <div class="choice-row">
+          <button class="choice-btn" id="reflectYesInline" type="button">Yes</button>
+          <button class="choice-btn choice-btn--ghost" id="reflectNotNowInline" type="button">Not now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REFLECTION SETUP — prototype UI flow only, no backend/sending. -->
+    <section class="view view--reflection" data-view="reflection" aria-hidden="true">
+      <div class="reflect-panel" data-panel="ask">
+        <h2 class="headline headline--reflect">Would you like the option to reflect later?</h2>
+        <div class="choice-row">
+          <button class="choice-btn" id="reflectYesFull" type="button">Yes</button>
+          <button class="choice-btn choice-btn--ghost" id="reflectNotNowFull" type="button">Not now</button>
+        </div>
+      </div>
+
+      <div class="reflect-panel" data-panel="timing">
+        <h2 class="headline headline--reflect">When would you like to check back in?</h2>
+        <div class="choice-row">
+          <button class="choice-btn" data-timing="30m" type="button">30 minutes</button>
+          <button class="choice-btn" data-timing="1h" type="button">1 hour</button>
+          <button class="choice-btn" data-timing="3h" type="button">3 hours</button>
+          <button class="choice-btn" data-timing="tomorrow" type="button">Tomorrow</button>
+        </div>
+      </div>
+
+      <div class="reflect-panel" data-panel="channel">
+        <h2 class="headline headline--reflect">How should we reach you?</h2>
+        <div class="choice-row">
+          <button class="choice-btn" data-channel="email" type="button">Email</button>
+          <button class="choice-btn" data-channel="sms" type="button">SMS or WhatsApp</button>
+        </div>
+      </div>
+
+      <div class="reflect-panel" data-panel="contact">
+        <label class="field-label" id="reflectContactLabel" for="reflectContact">Email address</label>
+        <input class="field" id="reflectContact" name="reflectContact" type="text" autocomplete="off">
+      </div>
+
+      <!-- Not part of the specified copy — a consistent step-back affordance
+           reusing the same corner-action pattern from the Audio pause state,
+           so no step in this flow is a dead end. Hidden on the first ("ask")
+           panel since "Not now" already exits there. -->
+      <button class="corner-action corner-action--left" id="reflectBackButton" type="button">Back</button>
+    </section>
+
+  </main>
+
+  <!-- Live region for screen-reader state announcements only; no visible extra copy. -->
+  <div class="visually-hidden" id="stateAnnouncer" role="status" aria-live="polite"></div>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>
