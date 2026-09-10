@@ -1,166 +1,231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>HypnoBond Private</title>
-<meta name="description" content="A private, guided moment from HypnoBond.">
-<meta name="theme-color" content="#2E1638">
-<link rel="icon" href="Assets/hypnobond-logo.jpg">
-<link rel="apple-touch-icon" href="Assets/hypnobond-logo.jpg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HypnoBond Private — Arrival Clarity Protocol</title>
 
+<!-- FIX: none of these existed in the original file (Sections 10-11 of the
+     implementation guide require them: no search indexing, iOS home-screen
+     behaviour, and a client-side CSP floor — real CSP headers still need
+     to be set at the hosting layer once deployed). -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F7F4F0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' https://cdn.hypnobondprivate.com; connect-src 'self'; script-src 'self';">
+
+<!-- FIX: fonts were loaded via a CSS @import inside <style>, which blocks
+     the render tree on an extra round-trip. A <link> (with preconnect)
+     can be fetched in parallel with the rest of the page. Same fonts,
+     same weights — nothing about the type system changed. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles/main.css">
 </head>
-<body data-state="arrival">
+<body>
+<div class="shell">
 
-  <!-- Persistent atmosphere: photography + gradient + organic shapes. Stays mounted across every state; only its treatment (crop / blur / opacity) changes. -->
-  <div class="atmosphere" aria-hidden="true">
-    <div class="atmosphere__photo atmosphere__photo--arrival"></div>
-    <div class="atmosphere__photo atmosphere__photo--quiet"></div>
-    <div class="atmosphere__wash"></div>
+  <!-- ══ PREVIEW NAV — testing/demo aid only. Lets a real end user jump
+       straight to any screen, including mid-audio or skipping the
+       reminder step, which breaks the intended linear QR-scan flow (and
+       the "no browser navigation between screens" rule in Section 4 of
+       the implementation guide). Remove this block before any real
+       deployment. Real buttons + aria-current so it's at least keyboard-
+       usable while it's here for testing. ══ -->
+  <nav class="previewnav" aria-label="Preview: jump to screen">
+    <button class="navbtn active" type="button" data-go="0">Before</button>
+    <button class="navbtn" type="button" data-go="1">Select</button>
+    <button class="navbtn" type="button" data-go="2">Player</button>
+    <button class="navbtn" type="button" data-go="3">Exit</button>
+    <a class="navbtn" href="reflect.html?id=preview">Later<br>Feedback</a>
+  </nav>
 
-    <svg class="atmosphere__blob atmosphere__blob--one" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id="blobGradientOne" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#4A5FD1"/>
-          <stop offset="100%" stop-color="#C81E6B"/>
-        </linearGradient>
-      </defs>
-      <path fill="url(#blobGradientOne)" d="M431,308Q414,416,306,436Q198,456,131,368Q64,280,124,181Q184,82,296,101Q408,120,433,214Q458,308,431,308Z"/>
-    </svg>
-
-    <svg class="atmosphere__blob atmosphere__blob--two" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id="blobGradientTwo" x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#C81E6B"/>
-          <stop offset="100%" stop-color="#4A5FD1"/>
-        </linearGradient>
-      </defs>
-      <path fill="url(#blobGradientTwo)" d="M441,296Q432,392,338,422Q244,452,166,392Q88,332,101,232Q114,132,214,111Q314,90,388,157Q462,224,441,296Z"/>
-    </svg>
+  <!-- ══ TOP BAR ══ -->
+  <div class="topbar">
+    <div class="wordmark">HP<span>.</span></div>
+    <div class="tagline">Arrival Clarity Protocol™</div>
   </div>
 
-  <!-- Persistent brand mark. Not a navigation bar: a single fixed mark, present in every state. -->
-  <header class="brand-mark">
-    <span class="brand-mark__icon">
-      <img src="Assets/hypnobond-logo.jpg" alt="" width="150" height="150">
-    </span>
-    <span class="brand-mark__word">HypnoBond</span>
-  </header>
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN 0: BEFORE (quick pre-audio capture) -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="screen active" id="s0">
+    <h1 class="before-title">Before you begin.</h1>
+    <p class="before-sub">Two questions — a sentence each. This shapes how we read your feedback later.</p>
 
-  <main class="experience">
+    <div class="q-block">
+      <div class="q-label" id="qlabel-a">What were you doing just before this?</div>
+      <!-- FIX: pills were <div onclick>, unreachable by keyboard (verified:
+           Tab skipped over every one during review). Now real buttons with
+           aria-pressed reflecting selection state, grouped for screen
+           readers via aria-labelledby + role="group". -->
+      <div class="pill-row" role="group" aria-labelledby="qlabel-a">
+        <button class="pill" type="button" aria-pressed="false">Meeting</button>
+        <button class="pill" type="button" aria-pressed="false">Call</button>
+        <button class="pill" type="button" aria-pressed="false">Desk work</button>
+        <button class="pill" type="button" aria-pressed="false">Travelling</button>
+        <button class="pill" type="button" aria-pressed="false">Something else</button>
+      </div>
+    </div>
 
-    <!-- ARRIVAL -->
-    <section class="view view--arrival" data-view="arrival" aria-hidden="false">
-      <p class="badge">3:30 &middot; Private Session</p>
-      <h1 class="headline">A quiet moment.<br>Just for you.</h1>
-      <p class="supporting">Take a moment to pause. This takes 3:30.</p>
+    <div class="q-block">
+      <div class="q-label" id="qlabel-b">Where is your attention mostly right now?</div>
+      <div class="pill-row" role="group" aria-labelledby="qlabel-b">
+        <button class="pill" type="button" aria-pressed="false">What I was just doing</button>
+        <button class="pill" type="button" aria-pressed="false">Right here</button>
+        <button class="pill" type="button" aria-pressed="false">A mix</button>
+        <button class="pill" type="button" aria-pressed="false">Hard to say</button>
+      </div>
+    </div>
 
-      <button class="cta" id="playButton" type="button">
-        <span class="cta__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M7 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7l-10.4-6.5A1 1 0 0 0 7 5.5Z"/></svg>
-        </span>
-        <span class="cta__label">Play</span>
+    <button class="continue-btn" type="button" id="continueBtn">Continue →</button>
+    <button class="skip-link" type="button" id="skipBtn">Skip — go straight to the audio</button>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN 1: AUDIO SELECTION                 -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="screen" id="s1">
+    <div class="sel-eyebrow">Select a direction</div>
+    <h2 class="sel-title">What does this moment need?</h2>
+
+    <!-- FIX: cards were <div onclick>, unreachable by keyboard. Now real
+         buttons; aria-pressed reflects the chosen state. -->
+    <div class="audio-cards" id="audioCards" role="group" aria-label="Select a direction">
+      <button class="acard" type="button" id="card-1"
+        data-name="Clear the Noise™" data-dur="3:30" data-seconds="210"
+        data-src="https://cdn.hypnobondprivate.com/audio/clear-the-noise.mp3" aria-pressed="false">
+        <div class="acard-top">
+          <div class="acard-name">Clear the Noise™</div>
+          <div class="acard-dur">3:30</div>
+        </div>
+        <div class="acard-desc">For overloaded or mentally saturated states. When too much is still running underneath.</div>
+        <div class="acard-state">→ Selected</div>
       </button>
-    </section>
 
-    <!-- AUDIO -->
-    <section class="view view--audio" data-view="audio" aria-hidden="true">
-      <p class="badge badge--quiet">3:30 &middot; Private Session</p>
+      <button class="acard" type="button" id="card-2"
+        data-name="Sharpen Focus™" data-dur="3:10" data-seconds="190"
+        data-src="https://cdn.hypnobondprivate.com/audio/sharpen-focus.mp3" aria-pressed="false">
+        <div class="acard-top">
+          <div class="acard-name">Sharpen Focus™</div>
+          <div class="acard-dur">3:10</div>
+        </div>
+        <div class="acard-desc">For activated states. When the mind is engaged but needs cleaner directional pull before arrival.</div>
+        <div class="acard-state">→ Selected</div>
+      </button>
 
-      <div class="player">
-        <svg class="player__ring" viewBox="0 0 140 140" aria-hidden="true">
-          <defs>
-            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#4A5FD1"/>
-              <stop offset="100%" stop-color="#C81E6B"/>
-            </linearGradient>
-          </defs>
-          <circle class="player__ring-track" cx="70" cy="70" r="60"/>
-          <circle class="player__ring-progress" id="ringProgress" cx="70" cy="70" r="60"/>
-        </svg>
+      <button class="acard" type="button" id="card-3"
+        data-name="Arrive Quietly™" data-dur="4:00" data-seconds="240"
+        data-src="https://cdn.hypnobondprivate.com/audio/arrive-quietly.mp3" aria-pressed="false">
+        <div class="acard-top">
+          <div class="acard-name">Arrive Quietly™</div>
+          <div class="acard-dur">4:00</div>
+        </div>
+        <div class="acard-desc">For extended transit or high-demand travel. A longer sequence for deeper residue.</div>
+        <div class="acard-state">→ Selected</div>
+      </button>
 
-        <button class="player__control" id="playPauseButton" type="button" aria-label="Play">
-          <svg class="icon icon--play" viewBox="0 0 24 24" width="26" height="26">
-            <path fill="currentColor" d="M7 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7l-10.4-6.5A1 1 0 0 0 7 5.5Z"/>
-          </svg>
-          <svg class="icon icon--pause is-hidden" viewBox="0 0 24 24" width="26" height="26">
-            <path fill="currentColor" d="M7 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5Zm7 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V5Z"/>
-          </svg>
-        </button>
+      <button class="acard" type="button" id="card-4"
+        data-name="Ground + Begin™" data-dur="2:45" data-seconds="165"
+        data-src="https://cdn.hypnobondprivate.com/audio/ground-and-begin.mp3" aria-pressed="false">
+        <div class="acard-top">
+          <div class="acard-name">Ground + Begin™</div>
+          <div class="acard-dur">2:45</div>
+        </div>
+        <div class="acard-desc">For compressed transitions. When the window is short and re-engagement is immediate.</div>
+        <div class="acard-state">→ Selected</div>
+      </button>
+    </div>
+
+    <div class="context-note">
+      <strong>Not sure which?</strong> If attention feels scattered or cluttered, start with Clear the Noise™. If you feel activated and alert but need focus, Sharpen Focus™.
+    </div>
+
+    <button class="begin-btn" id="beginbtn" type="button" disabled>Begin</button>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN 2: PLAYER                          -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="screen" id="s2">
+    <div class="now-playing">
+      <div class="np-eye">Now playing</div>
+      <div class="np-name" id="npname">Clear the Noise™</div>
+    </div>
+
+    <div class="bigplay-wrap">
+      <!-- FIX: was a <div onclick> — the single most important control on
+           the page (starts the audio) and completely unreachable by
+           keyboard. aria-label kept in sync with play/pause state in JS. -->
+      <button class="bigplay" id="bigplay" type="button" aria-label="Play">
+        <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h4v16H7zM15 4h4v16h-4z"/></svg>
+      </button>
+    </div>
+
+    <div class="prog-area" id="progarea">
+      <div class="prog-track">
+        <div class="prog-fill" id="pfill"></div>
+      </div>
+      <div class="prog-time">
+        <span id="tnow">0:00</span>
+        <span id="tdur">3:30</span>
+      </div>
+    </div>
+
+    <p class="pause-msg" id="pausemsg"></p>
+
+    <!-- FIX: there was no <audio> element anywhere in the original file —
+         the "player" was a pure JS timer with a hardcoded x7 speed
+         multiplier (confirmed by testing: a 3:30 track visually finished
+         in ~30 real seconds). This is the real HTML Audio API the
+         implementation guide requires; src is set from the chosen card's
+         data-src when Begin is pressed. Real MP3s still need to be
+         supplied (see Section 14 of the guide) — until then playback
+         will fail to actually produce sound, caught in JS so it never
+         crashes the page. -->
+    <audio id="audioEl" preload="auto" playsinline></audio>
+  </section>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN 3: EXIT + REMINDER                 -->
+  <!-- ══════════════════════════════════════════ -->
+  <section class="screen" id="s3">
+    <div class="exit-wrap">
+      <h2 class="exit-title">That's it.</h2>
+      <p class="exit-body">Continue with your day. Nothing else to do right now.</p>
+    </div>
+
+    <div class="reminder-box">
+      <p class="rem-q">We'll send one or two short questions later. When suits you?</p>
+      <div class="time-chips" id="tchips" role="group" aria-label="When should we send it">
+        <button class="tchip" type="button" data-time="30min" aria-pressed="false">30 minutes</button>
+        <button class="tchip" type="button" data-time="evening" aria-pressed="false">This evening</button>
+        <button class="tchip" type="button" data-time="tomorrow" aria-pressed="false">Tomorrow</button>
+        <button class="tchip" type="button" data-time="none" aria-pressed="false">Not now</button>
       </div>
 
-      <p class="time" id="timeLabel" aria-live="off">0:00 / 3:30</p>
-
-      <!-- Revealed only while paused (never during playback or autoplay). -->
-      <button class="corner-action corner-action--left" id="backButton" type="button">Back</button>
-      <button class="corner-action corner-action--right" id="reflectionCtaButton" type="button">Want us to send a reflection later?</button>
-    </section>
-
-    <!-- COMPLETION -->
-    <section class="view view--completion" data-view="completion" aria-hidden="true">
-      <h2 class="headline headline--completion">That&rsquo;s it.</h2>
-      <p class="supporting supporting--completion">Continue with your day.</p>
-
-      <!-- Revealed a few seconds after Completion settles, not simultaneously. -->
-      <div class="reflect-invite" id="reflectInvite">
-        <p class="reflect-invite__question">Would you like the option to reflect later?</p>
-        <div class="choice-row">
-          <button class="choice-btn" id="reflectYesInline" type="button">Yes</button>
-          <button class="choice-btn choice-btn--ghost" id="reflectNotNowInline" type="button">Not now</button>
+      <div class="chan-reveal" id="chanreveal">
+        <div class="chan-inner">
+          <div class="q-label" id="qlabel-chan" style="margin-bottom:10px;">Where should we send it?</div>
+          <div class="chan-row" role="group" aria-labelledby="qlabel-chan">
+            <button class="cchan" type="button" data-channel="sms" aria-pressed="false">Text</button>
+            <button class="cchan" type="button" data-channel="email" aria-pressed="false">Email</button>
+          </div>
+          <input class="input-field" id="contact" type="text" placeholder="Your number or email" autocomplete="off">
+          <button class="set-btn" id="setBtn" type="button">Done</button>
         </div>
       </div>
-    </section>
 
-    <!-- REFLECTION SETUP — prototype UI flow only, no backend/sending. -->
-    <section class="view view--reflection" data-view="reflection" aria-hidden="true">
-      <div class="reflect-panel" data-panel="ask">
-        <h2 class="headline headline--reflect">Would you like the option to reflect later?</h2>
-        <div class="choice-row">
-          <button class="choice-btn" id="reflectYesFull" type="button">Yes</button>
-          <button class="choice-btn choice-btn--ghost" id="reflectNotNowFull" type="button">Not now</button>
-        </div>
-      </div>
+      <p class="settled" id="settled">Set — we'll be brief.</p>
+    </div>
+    <p class="privacy">Stays with HypnoBond Private.<br>Nothing shared publicly.</p>
+  </section>
 
-      <div class="reflect-panel" data-panel="timing">
-        <h2 class="headline headline--reflect">When would you like to check back in?</h2>
-        <div class="choice-row">
-          <button class="choice-btn" data-timing="30m" type="button">30 minutes</button>
-          <button class="choice-btn" data-timing="1h" type="button">1 hour</button>
-          <button class="choice-btn" data-timing="3h" type="button">3 hours</button>
-          <button class="choice-btn" data-timing="tomorrow" type="button">Tomorrow</button>
-        </div>
-      </div>
+</div><!-- /shell -->
 
-      <div class="reflect-panel" data-panel="channel">
-        <h2 class="headline headline--reflect">How should we reach you?</h2>
-        <div class="choice-row">
-          <button class="choice-btn" data-channel="email" type="button">Email</button>
-          <button class="choice-btn" data-channel="sms" type="button">SMS or WhatsApp</button>
-        </div>
-      </div>
-
-      <div class="reflect-panel" data-panel="contact">
-        <label class="field-label" id="reflectContactLabel" for="reflectContact">Email address</label>
-        <input class="field" id="reflectContact" name="reflectContact" type="text" autocomplete="off">
-      </div>
-
-      <!-- Not part of the specified copy — a consistent step-back affordance
-           reusing the same corner-action pattern from the Audio pause state,
-           so no step in this flow is a dead end. Hidden on the first ("ask")
-           panel since "Not now" already exits there. -->
-      <button class="corner-action corner-action--left" id="reflectBackButton" type="button">Back</button>
-    </section>
-
-  </main>
-
-  <!-- Live region for screen-reader state announcements only; no visible extra copy. -->
-  <div class="visually-hidden" id="stateAnnouncer" role="status" aria-live="polite"></div>
-
-  <script src="scripts/main.js"></script>
+<script src="scripts/main.js"></script>
 </body>
 </html>

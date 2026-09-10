@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HypnoBond Private — A short check-in</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F7F4F0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; script-src 'self';">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="wordmark">HP<span>.</span></div>
+    <div class="tagline">Arrival Clarity Protocol™</div>
+  </div>
+
+  <!-- FIX: this screen previously lived inside index.html as a 5th
+       .screen, reachable instantly via the on-page prototype nav — the
+       implementation guide (Section 4/5) is explicit that Later Feedback
+       must be its own URL, opened only from the reminder link sent later.
+       This is that separate page. The "link has expired" copy below is
+       new (nothing like it existed before) because a standalone page now
+       needs a fallback for a missing/invalid id — its wording is taken
+       directly from Section 11 of the implementation guide, not invented. -->
+  <section class="screen active" id="invalidScreen">
+    <h1 class="exit-title">This link has expired.</h1>
+    <p class="exit-body">Nothing to do here — you can close this page.</p>
+  </section>
+
+  <section class="screen" id="checkinScreen">
+    <div class="fb-badge"><span class="dot"></span>A short check-in</div>
+
+    <div id="fbsteps">
+      <div class="fb-count" id="fbcount">01 / 03</div>
+
+      <div class="fb-step show" id="fs1">
+        <p class="fb-q">How much is that earlier moment still on your mind?</p>
+        <p class="fb-hint">Tap anywhere on the scale.</p>
+        <div class="scale-row" id="sr1" role="group" aria-label="How much is that earlier moment still on your mind?">
+          <button type="button" data-value="1">1</button><button type="button" data-value="2">2</button>
+          <button type="button" data-value="3">3</button><button type="button" data-value="4">4</button>
+          <button type="button" data-value="5">5</button><button type="button" data-value="6">6</button>
+          <button type="button" data-value="7">7</button>
+        </div>
+        <div class="scale-ends"><span>Not at all</span><span>Very much</span></div>
+      </div>
+
+      <div class="fb-step" id="fs2">
+        <p class="fb-q">How available do you feel for what comes next?</p>
+        <p class="fb-hint">Tap anywhere on the scale.</p>
+        <div class="scale-row" id="sr2" role="group" aria-label="How available do you feel for what comes next?">
+          <button type="button" data-value="1">1</button><button type="button" data-value="2">2</button>
+          <button type="button" data-value="3">3</button><button type="button" data-value="4">4</button>
+          <button type="button" data-value="5">5</button><button type="button" data-value="6">6</button>
+          <button type="button" data-value="7">7</button>
+        </div>
+        <div class="scale-ends"><span>Not very</span><span>Fully</span></div>
+      </div>
+
+      <div class="fb-step" id="fs3">
+        <p class="fb-q">Anything you noticed, if anything?</p>
+        <p class="fb-hint">Only if something comes to mind — no need to analyse.</p>
+        <textarea class="fb-note" id="fbNote" placeholder="Optional…"></textarea>
+        <button class="send-btn" id="shareBtn" type="button">Share</button>
+        <button class="skip-btn" id="nothingBtn" type="button">Nothing to add</button>
+      </div>
+    </div>
+
+    <div class="thanks-wrap" id="thanks">
+      <h2>Thank you — noted quietly.</h2>
+      <p>Stays with HypnoBond Private.<br>Nothing shared publicly.</p>
+    </div>
+
+    <p class="privacy" id="fbpriv">Stays with HypnoBond Private.<br>Nothing shared publicly.</p>
+  </section>
+
+</div><!-- /shell -->
+
+<script src="scripts/reflect.js"></script>
+</body>
+</html>
